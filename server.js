@@ -48,6 +48,29 @@ app.get("/addtodo", function (req, res) {
 
   });
 
+ app.get("/editTags", function (req, res) {
+    var x = req.query;
+    var callback = function(error, result){
+        if(result)
+        {
+            res.end("done");
+        }
+    }
+
+    db.collection(req.query.collection).findOne({id: x.id}, function(err, result1) {
+        if(result1){
+            console.log(result1);
+            var tags = x.tags.split(",");
+            result1.tags = tags;
+            db.collection(req.query.collection).save(result1, callback);
+        }
+        else{
+            //db.collection(req.query.collection).insert(x, callback);
+        }
+    });
+
+  });
+
 
 
 

@@ -99,6 +99,7 @@ function addNew()
 	  var fordb = {
 		  id: "photo" + new Date().getTime().toString(),
 		  name: "Untitled",
+		  tags: [],
 		  url: "https://s3.amazonaws.com/ameweb/" + fileInput
 	  }
 
@@ -129,10 +130,20 @@ function addNew()
 		   for(var i=0; i < list.length; i++){
 			   output = output + "<div id=title><h1>" + list[i].name + "</h1></div>";
 				 output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
-			  	"'>" + "</a>"+"</div>";
+			  	"'>" + "</a>"+"</div>" + "<br>";
 			   output = output + "<a href='javascript:renamePhoto(" + i + ")' id='rename' class='btn btn-default'>" + "Rename</a>";
 			   output = output + "<a href='javascript:deletePhoto(" + i + ")' id='delete' class='btn btn-default'>" + "Delete</a>";
-			   output = output + "<hr>";
+			   output = output + "<a href='javascript:editTags(" + i + ")' id='tags' class='btn btn-default'>" + "Tags</a>";
+			   if(list[i].tags.length > 0){
+			   	output = output + "<p>";
+
+			   	for(var j=0; j<list[i].tags.length; j++){
+			   		output = output + "[" + list[i].tags[j] + "]" + "&nbsp";
+			   	}
+
+			   	output = output + "</p>";
+			 	 }
+			 	 output = output + "<hr>";
 		   }
 		   document.getElementById("list").innerHTML = output;
 	   }
@@ -159,6 +170,29 @@ function addNew()
 
 	   var url = "./renamephoto?id=" + encodeURIComponent(id)
 	   					+ "&name=" + encodeURIComponent(newname)
+							+ "&collection=" + userID;
+
+
+	   var callback = function(data){
+		   if(data === "done"){
+			   updateList();
+		   }
+	   }
+	   loadURL(url, callback);
+   }
+
+   function editTags(i){
+	   var id = allPhotos[i].id;
+	   var oldtags = '';
+	   for(var j=0; j<allPhotos[i].tags.length; j++){
+	   	oldtags += allPhotos[i].tags[j];
+	   	if(j != allPhotos[i].tags.length) oldtags += ',';
+	   }
+	   var oldTags = allPhotos[i].tags;
+	   var tags = prompt("Enter tags, separated by a comma", oldTags);
+
+	   var url = "./edittags?id=" + encodeURIComponent(id)
+	   					+ "&tags=" + encodeURIComponent(tags)
 							+ "&collection=" + userID;
 
 
