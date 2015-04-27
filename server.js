@@ -48,7 +48,7 @@ app.get("/addtodo", function (req, res) {
 
   });
 
- app.get("/editTags", function (req, res) {
+ /*app.get("/editTags", function (req, res) {
     var x = req.query;
     var callback = function(error, result){
         if(result)
@@ -69,7 +69,7 @@ app.get("/addtodo", function (req, res) {
         }
     });
 
-  });
+  });*/
 
 
 

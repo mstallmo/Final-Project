@@ -87,6 +87,19 @@ function addNew()
           return;
       }
 
+      if(document.getElementById('photoName').value == ""){
+          alert("Invalid Name -- Please enter a name for the photo");
+          document.getElementById("photoName").value = "";
+          return;
+      }
+
+      var checkboxTags = [];
+      if(document.getElementById('landscapeCheckbox').checked) checkboxTags.push('landscape');
+      if(document.getElementById('foodCheckbox').checked) checkboxTags.push('food');
+      if(document.getElementById('animalsCheckbox').checked) checkboxTags.push('animals');
+      if(document.getElementById('selfieCheckbox').checked) checkboxTags.push('selfie');
+      if(document.getElementById('otherCheckbox').checked) checkboxTags.push('other');
+      console.log(checkboxTags);
 
       var fd = new FormData();
       var fileInput = userID + new Date().getTime().toString() + "." + t;
@@ -94,12 +107,14 @@ function addNew()
       fd.append('date', (new Date()).toString());
       fd.append('input', fileObj);
       fd.append('fileInput', fileInput);
-			fd.append('collection', userID);
+			fd.append('collection', 'ame494unsplash');
 
 	  var fordb = {
 		  id: "photo" + new Date().getTime().toString(),
-		  name: "Untitled",
-		  tags: [],
+		  date: new Date().getTime().toString(),
+		  name: document.getElementById('photoName').value,
+		  tags: checkboxTags,
+		  user: userID,
 		  url: "https://s3.amazonaws.com/ameweb/" + fileInput
 	  }
 
@@ -108,6 +123,7 @@ function addNew()
       var xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function() {
           document.getElementById("fileUpload").value = "";
+          document.getElementById('photoName').value = "";
           if (xhr.readyState != 4) { return; }
 		  updateList();
       };
@@ -118,22 +134,22 @@ function addNew()
 
 
    var allPhotos;
-   function updateList()
+   function updateList(photosToShow)
    {
 	   var url = "./listphotos";
-		 url = url + "?collection=" + userID;
-
+		 url = url + "?collection=" + 'ame494unsplash';
 	   var callback = function(data){
 		   var list = JSON.parse(data);
 		   allPhotos = list;
 		   var output = "";
 		   for(var i=0; i < list.length; i++){
+		   	if(!photosToShow || (photosToShow == 'user' && list[i].user == userID)) {
 			   output = output + "<div id=title><h1>" + list[i].name + "</h1></div>";
 				 output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
 			  	"'>" + "</a>"+"</div>" + "<br>";
 			   output = output + "<a href='javascript:renamePhoto(" + i + ")' id='rename' class='btn btn-default'>" + "Rename</a>";
 			   output = output + "<a href='javascript:deletePhoto(" + i + ")' id='delete' class='btn btn-default'>" + "Delete</a>";
-			   output = output + "<a href='javascript:editTags(" + i + ")' id='tags' class='btn btn-default'>" + "Tags</a>";
+			   //output = output + "<a href='javascript:editTags(" + i + ")' id='tags' class='btn btn-default'>" + "Tags</a>";
 			   if(list[i].tags.length > 0){
 			   	output = output + "<p>";
 
@@ -144,6 +160,7 @@ function addNew()
 			   	output = output + "</p>";
 			 	 }
 			 	 output = output + "<hr>";
+			 	}
 		   }
 		   document.getElementById("list").innerHTML = output;
 	   }
@@ -181,7 +198,7 @@ function addNew()
 	   loadURL(url, callback);
    }
 
-   function editTags(i){
+   /*function editTags(i){
 	   var id = allPhotos[i].id;
 	   var oldtags = '';
 	   for(var j=0; j<allPhotos[i].tags.length; j++){
@@ -202,7 +219,7 @@ function addNew()
 		   }
 	   }
 	   loadURL(url, callback);
-   }
+   }*/
 
    function getPhotoName(id)
    {
@@ -279,8 +296,20 @@ function addNew()
 <body onload='updateList()'>
 	<div style='display:none' id='postlogin'>
 		<h1> Photo Uploader </h1>
-    	<input type='file' id='fileUpload' onchange='addNew()'>
+    	<input type='file' id='fileUpload'>
+    	<label for='photoName'>Photo name</label>
+	    <input type='text' id='photoName'>
+	    <br>
+	    <input type="checkbox" name="category" id='landscapeCheckbox' value="Landscape">Landscape
+	    <input type="checkbox" name="category" id='foodCheckbox' value="Food">Food
+	    <input type="checkbox" name="category" id='animalsCheckbox' value="Animals">Animals
+	    <input type="checkbox" name="category" id='selfieCheckbox' value="Selfie">Selfie
+	    <input type="checkbox" name="category" id='otherCheckbox' value="Other">Other
+	    <br>
+    	<button onclick="addNew()">Upload Photo</button>
 		<hr>
+		<button onclick="updateList('user')">My Photos</button>
+		<button onclick="updateList()">All Photos</button>
 		<div id="list">
 			list is empty
 		</div>
