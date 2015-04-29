@@ -28,4 +28,13 @@
 #title{
   margin: 20px;
   padding: 20px;
+  text-align: center;
+}
+
+#header{
+  position: relative;
+}
+
+.jumbotron{
+  margin-top: 50px;
 }

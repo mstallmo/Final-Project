@@ -7,7 +7,9 @@
 	<script src="lightbox.min.js"></script>
 	<link href="lightbox.css" rel="stylesheet" />
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<script src="bootstrap.min.js"></script>
 
 
 
@@ -144,7 +146,7 @@ function addNew()
 		   var output = "";
 		   for(var i=0; i < list.length; i++){
 		   	if(!photosToShow || (photosToShow == 'user' && list[i].user == userID)) {
-			   output = output + "<div id=title><h1>" + list[i].name + "</h1></div>";
+			   output = output + "<div id=title><h2>" + list[i].name + "</h2></div>";
 				 output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
 			  	"'>" + "</a>"+"</div>" + "<br>";
 			   output = output + "<a href='javascript:renamePhoto(" + i + ")' id='rename' class='btn btn-default'>" + "Rename</a>";
@@ -295,24 +297,55 @@ function addNew()
 </head>
 <body onload='updateList()'>
 	<div style='display:none' id='postlogin'>
-		<h1> Photo Uploader </h1>
-    	<input type='file' id='fileUpload'>
-    	<label for='photoName'>Photo name</label>
-	    <input type='text' id='photoName'>
-	    <br>
-	    <input type="checkbox" name="category" id='landscapeCheckbox' value="Landscape">Landscape
-	    <input type="checkbox" name="category" id='foodCheckbox' value="Food">Food
-	    <input type="checkbox" name="category" id='animalsCheckbox' value="Animals">Animals
-	    <input type="checkbox" name="category" id='selfieCheckbox' value="Selfie">Selfie
-	    <input type="checkbox" name="category" id='otherCheckbox' value="Other">Other
-	    <br>
-    	<button onclick="addNew()">Upload Photo</button>
-		<hr>
-		<button onclick="updateList('user')">My Photos</button>
-		<button onclick="updateList()">All Photos</button>
+
+
+		<!-- Navbar -->
+		<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	    	<div class"container">
+	    		<div class="navbar-header">
+	    			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	    				<span class="sr-only">Toggle Navigation</span>
+	    				<span class="icon-bar"></span>
+	    				<span class="icon-bar"></span>
+	    				<span class="icon-bar"></span>
+	    			</button>
+	    			<a class="navbar-brand" href="#">Unsplash</a>
+	    		</div>
+	    		<div class="navbar-collapse collapse">
+	    			<ul class="nav navbar-nav navbar-right">
+	    				<li class="active"><a href="#">Home</a></li>
+	    				<li><a href="#">Notifications</a></li>
+	    				<li><a href="#">Profile</a></li>
+	    			</ul>
+	    		</div>
+	    	</div>
+    	</div> 
+
+    	<!--Uploader: should only see the option to upload if logged in -->
+    	<div class="container">
+		    <div class="jumbotron text-center">
+				<h1 id='header'> Unsplash </h1>
+		    	<input type='file' id='fileUpload'>
+		    	<label for='photoName'>Photo name</label>
+			    <input type='text' id='photoName'>
+			    <br>
+			    <input type="checkbox" name="category" id='landscapeCheckbox' value="Landscape">Landscape
+			    <input type="checkbox" name="category" id='foodCheckbox' value="Food">Food
+			    <input type="checkbox" name="category" id='animalsCheckbox' value="Animals">Animals
+			    <input type="checkbox" name="category" id='selfieCheckbox' value="Selfie">Selfie
+			    <input type="checkbox" name="category" id='otherCheckbox' value="Other">Other
+			    <br>
+		    	<button onclick="addNew()">Upload Photo</button>
+				<hr>
+				<button onclick="updateList('user')">My Photos</button>
+				<button onclick="updateList()">All Photos</button>
+			</div>
+		</div>
+
 		<div id="list">
 			list is empty
 		</div>
+
 	</div>
 
 	<div id='prelogin'>
