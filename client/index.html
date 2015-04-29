@@ -1,26 +1,9 @@
+<!DOCTYPE HTML>
 <html>
 <head>
 
-	<link href="style.css" rel="stylesheet" />
-	<script src="md5.js"></script>
-	<script src="jquery-1.11.0.min.js"></script>
-	<script src="lightbox.min.js"></script>
-	<link href="lightbox.css" rel="stylesheet" />
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-	<script src="bootstrap.min.js"></script>
-
-
-
 	<script>
 
-
-	/*
-	This method uses a couple different methods of instantiating the
-	XMLHttpRequest object. The reason we do this is so we can support
-	multiple browser (I've only tested in IE and Firefox).
-	*/
 	function getXMLHTTPRequest()
 	{
 	    var request;
@@ -72,312 +55,52 @@
        }
    }
 
-
-var userID = "";
-
-function addNew()
-{
-      var fileObj = document.getElementById('fileUpload').files[0];
-      var filename = fileObj.name;
-      var size = fileObj.size;
-
-
-      var t = filename.substring(filename.length-3, filename.length).toLowerCase();
-      if(['png', 'jpg', 'gif'].indexOf(t) == -1){
-          alert("Incorrect File -- Please upload an image");
-          document.getElementById("fileUpload").value = "";
-          return;
-      }
-
-      if(document.getElementById('photoName').value == ""){
-          alert("Invalid Name -- Please enter a name for the photo");
-          document.getElementById("photoName").value = "";
-          return;
-      }
-
-      var checkboxTags = [];
-      if(document.getElementById('landscapeCheckbox').checked) checkboxTags.push('landscape');
-      if(document.getElementById('foodCheckbox').checked) checkboxTags.push('food');
-      if(document.getElementById('animalsCheckbox').checked) checkboxTags.push('animals');
-      if(document.getElementById('selfieCheckbox').checked) checkboxTags.push('selfie');
-      if(document.getElementById('otherCheckbox').checked) checkboxTags.push('other');
-      console.log(checkboxTags);
-
-      var fd = new FormData();
-      var fileInput = userID + new Date().getTime().toString() + "." + t;
-
-      fd.append('date', (new Date()).toString());
-      fd.append('input', fileObj);
-      fd.append('fileInput', fileInput);
-			fd.append('collection', 'ame494unsplash');
-
-	  var fordb = {
-		  id: "photo" + new Date().getTime().toString(),
-		  date: new Date().getTime().toString(),
-		  name: document.getElementById('photoName').value,
-		  tags: checkboxTags,
-		  user: userID,
-		  url: "https://s3.amazonaws.com/ameweb/" + fileInput
-	  }
-
-      fd.append('fordb', encodeURIComponent(JSON.stringify(fordb)));
-
-      var xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-          document.getElementById("fileUpload").value = "";
-          document.getElementById('photoName').value = "";
-          if (xhr.readyState != 4) { return; }
-		  updateList();
-      };
-      xhr.open("POST", "/uploadFile", true);
-      xhr.send(fd);
-}
-
-
-
-   var allPhotos;
-   function updateList(photosToShow)
-   {
-	   var url = "./listphotos";
-		 url = url + "?collection=" + 'ame494unsplash';
-	   var callback = function(data){
-		   var list = JSON.parse(data);
-		   allPhotos = list;
-		   var output = "";
-		   for(var i=0; i < list.length; i++){
-		   	if(!photosToShow || (photosToShow == 'user' && list[i].user == userID)) {
-			   output = output + "<div id=title><h2>" + list[i].name + "</h2></div>";
-				 output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
-			  	"'>" + "</a>"+"</div>" + "<br>";
-			   output = output + "<a href='javascript:renamePhoto(" + i + ")' id='rename' class='btn btn-default'>" + "Rename</a>";
-			   output = output + "<a href='javascript:deletePhoto(" + i + ")' id='delete' class='btn btn-default'>" + "Delete</a>";
-			   //output = output + "<a href='javascript:editTags(" + i + ")' id='tags' class='btn btn-default'>" + "Tags</a>";
-			   if(list[i].tags.length > 0){
-			   	output = output + "<p>";
-
-			   	for(var j=0; j<list[i].tags.length; j++){
-			   		output = output + "[" + list[i].tags[j] + "]" + "&nbsp";
-			   	}
-
-			   	output = output + "</p>";
-			 	 }
-			 	 output = output + "<hr>";
-			 	}
-		   }
-		   document.getElementById("list").innerHTML = output;
-	   }
-	   loadURL(url, callback);
-
-   }
-
-   function deletePhoto(i){
-	   var id = allPhotos[i].id;
-	   var url = "./deletephoto?id=" + encodeURIComponent(id)
-		  			 +"&collection=" + userID;
-	   var callback = function(data){
-		   if(data === "deleted"){
-			   updateList();
-		   }
-	   }
-
-	   loadURL(url, callback);
-   }
-
-   function renamePhoto(i){
-	   var id = allPhotos[i].id;
-	   var newname = prompt("Rename photo", getPhotoName(id))
-
-	   var url = "./renamephoto?id=" + encodeURIComponent(id)
-	   					+ "&name=" + encodeURIComponent(newname)
-							+ "&collection=" + userID;
-
-
-	   var callback = function(data){
-		   if(data === "done"){
-			   updateList();
-		   }
-	   }
-	   loadURL(url, callback);
-   }
-
-   /*function editTags(i){
-	   var id = allPhotos[i].id;
-	   var oldtags = '';
-	   for(var j=0; j<allPhotos[i].tags.length; j++){
-	   	oldtags += allPhotos[i].tags[j];
-	   	if(j != allPhotos[i].tags.length) oldtags += ',';
-	   }
-	   var oldTags = allPhotos[i].tags;
-	   var tags = prompt("Enter tags, separated by a comma", oldTags);
-
-	   var url = "./edittags?id=" + encodeURIComponent(id)
-	   					+ "&tags=" + encodeURIComponent(tags)
-							+ "&collection=" + userID;
-
-
-	   var callback = function(data){
-		   if(data === "done"){
-			   updateList();
-		   }
-	   }
-	   loadURL(url, callback);
-   }*/
-
-   function getPhotoName(id)
-   {
-	   for(var i = 0; i < allPhotos.length; i++){
-		   if(allPhotos[i].id === id){
-			   return allPhotos[i].name;
-		   }
-	   }
-	   return "";
-   }
-
-	function register()
+	var allPhotos;
+	function list(photosToShow)
 	{
-		var name = document.getElementById("nameReg").value;
-		var email = document.getElementById("usernameReg").value;
-		var pw1 = document.getElementById("passwordReg").value;
-		var pw2 = document.getElementById("passwordReg1").value;
+		var url = "./listphotos";
+		url = url + "?collection=" + 'ame494unsplash';
+		var callback = function(data){
+			var list = JSON.parse(data);
+			allPhotos = list;
+			var output = "";
+			for(var i=0; i < list.length; i++){
+				if(!photosToShow || (photosToShow == 'user' && list[i].user == userID)) {
+				output = output + "<div id=photoTitle><h2>" + list[i].name + "</h2></div>";
+				output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
+				"'>" + "</a>"+"</div>" + "<br>";
+				output = output + "<a href='javascript:renamePhoto(" + i + ")' id='rename' class='btn btn-default'>" + "Rename</a>";
+				output = output + "<a href='javascript:deletePhoto(" + i + ")' id='delete' class='btn btn-default'>" + "Delete</a>";
+				//output = output + "<a href='javascript:editTags(" + i + ")' id='tags' class='btn btn-default'>" + "Tags</a>";
+				if(list[i].tags.length > 0){
+					output = output + "<p>";
 
-		if(pw1 != pw2){
-			alert('passwords do not match!');
-			return;
+					for(var j=0; j<list[i].tags.length; j++){
+						output = output + "[" + list[i].tags[j] + "]" + "&nbsp";
+					}
+
+					output = output + "</p>";
+				}
+				output = output + "<hr>";
+				}
+			}
+			document.getElementById("photolist").innerHTML = output;
 		}
-
-		var url = "./createUser";
-		url = url + "?name=" + name;
-		url = url + "&userID=" + email;
-		url = url + "&password=" + hex_md5(pw1);
-		url = url + "&userType=user";
-		url = url + "&collection=users";
-
-		loadURL(url, function(data){
-			if(data === "1"){
-				alert("account created!")
-				document.getElementById("nameReg").value="";
-				document.getElementById("usernameReg").value="";
-				document.getElementById("passwordReg").value="";
-				document.getElementById("passwordReg1").value="";
-			}
-			else{
-				alert("account already exists");
-			}
-		});
+		loadURL(url, callback);
 	}
 
-	function login()
-	{
-		var email = document.getElementById("username").value;
-		var pw = hex_md5(document.getElementById("password").value);
-
-		var url = "./login";
-		url = url + "?userID=" + email;
-		url = url + "&password=" + pw;
-		url = url +"&userType=user";
-		url = url +"&collection=users";
-
-		loadURL(url , function(data){
-			if(data === "1"){
-				document.getElementById("postlogin").style.display="block";
-				document.getElementById("prelogin").style.display="none";
-				userID = email;
-				updateList();
-			}
-			else{
-				alert("Login failed");
-				document.getElementById("username").value="";
-			  document.getElementById("password").value="";
-			}
-
-		});
-	}
 	</script>
-
 </head>
-<body onload='updateList()'>
-	<div style='display:none' id='postlogin'>
+<body onload = 'list()'>
 
+	<a href=login.html>Login/Sign up</a>
 
-		<!-- Navbar -->
-		<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	    	<div class"container">
-	    		<div class="navbar-header">
-	    			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-	    				<span class="sr-only">Toggle Navigation</span>
-	    				<span class="icon-bar"></span>
-	    				<span class="icon-bar"></span>
-	    				<span class="icon-bar"></span>
-	    			</button>
-	    			<a class="navbar-brand" href="#">Unsplash</a>
-	    		</div>
-	    		<div class="navbar-collapse collapse">
-	    			<ul class="nav navbar-nav navbar-right">
-	    				<li class="active"><a href="#">Home</a></li>
-	    				<li><a href="#">Notifications</a></li>
-	    				<li><a href="#">Profile</a></li>
-	    			</ul>
-	    		</div>
-	    	</div>
-    	</div> 
+	<h1 id="pagetitle">UnSplash</h1>
 
-    	<!--Uploader: should only see the option to upload if logged in -->
-    	<div class="container">
-		    <div class="jumbotron text-center">
-				<h1 id='header'> Unsplash </h1>
-		    	<input type='file' id='fileUpload'>
-		    	<label for='photoName'>Photo name</label>
-			    <input type='text' id='photoName'>
-			    <br>
-			    <input type="checkbox" name="category" id='landscapeCheckbox' value="Landscape">Landscape
-			    <input type="checkbox" name="category" id='foodCheckbox' value="Food">Food
-			    <input type="checkbox" name="category" id='animalsCheckbox' value="Animals">Animals
-			    <input type="checkbox" name="category" id='selfieCheckbox' value="Selfie">Selfie
-			    <input type="checkbox" name="category" id='otherCheckbox' value="Other">Other
-			    <br>
-		    	<button onclick="addNew()">Upload Photo</button>
-				<hr>
-				<button onclick="updateList('user')">My Photos</button>
-				<button onclick="updateList()">All Photos</button>
-			</div>
-		</div>
+	<br>
 
-		<div id="list">
-			list is empty
-		</div>
-
+	<div id="photolist">
 	</div>
 
-	<div id='prelogin'>
-		<div class='box'>
-			<h1> Sign in </h1>
-
-			<label for='username'> Username </label>
-	    	<input type='email' id='username' >
-
-			<label for='password'> Password </label>
-	    	<input type='password' id='password' >
-
-			<a href='javascript:login()'> Log in </a>
-		</div>
-
-		<div class='box'>
-			<h1> Register </h1>
-			<label for='nameReg'> Full name  </label>
-	    	<input type='text' id='nameReg' >
-
-			<label for='usernameReg'> Email (used as username) </label>
-	    	<input type='email' id='usernameReg' >
-
-			<label for='passwordReg'> Password </label>
-	    	<input type='password' id='passwordReg' >
-
-			<label for='passwordReg1'> Retype Password </label>
-	    	<input type='password' id='passwordReg1' >
-
-			<a href='javascript:register()'> Register </a>
-		</div>
-	</div>
 </body>
-
 </html>
