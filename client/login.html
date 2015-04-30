@@ -292,6 +292,32 @@ function addNew()
 
 		});
 	}
+
+	function searchTags() {
+		var tagToSearch = document.getElementById("searchText").value;
+		var match;
+		for (var i=0; i < allPhotos.length; i++) {
+	console.log(i);
+	console.log(tagToSearch);
+	console.log('NAME: ' + allPhotos[i].name.indexOf(tagToSearch));
+			if (allPhotos[i].tags.indexOf(tagToSearch.toLowerCase()) >= 0) {
+		console.log('Working!');
+				alert(allPhotos[i].tags);
+				match = allPhotos[i]; //Store all objects that match into this variable
+			}
+			else if (allPhotos[i].name.indexOf(tagToSearch) >= 0) {
+		console.log(allPhotos[i].name.indexOf(tagToSearch));
+				alert(allPhotos[i].name);
+				match = allPhotos[i]; //Store all objects that match into this variable
+			}
+	if(match) {
+		updateList(tagToSearch);
+		return; //Returns all the tags that matched
+	}
+		}
+		return null;
+	}
+
 	</script>
 
 </head>
@@ -322,6 +348,26 @@ function addNew()
     	</div>
 
     	<!--Uploader: should only see the option to upload if logged in -->
+
+			<div class="container">
+				<div class="row">
+			        <div class="col-md-6">
+			    		<h2>Custom search field</h2>
+			            <div id="custom-search-input">
+			                <div class="input-group col-md-12">
+			                    <input type="text" id="searchText" class="form-control input-lg" placeholder="Buscar" />
+			                    <span class="input-group-btn">
+			                        <button onclick="searchTags()" class="btn btn-info btn-lg" type="button">
+			                            <i class="glyphicon glyphicon-search"></i>
+			                        </button>
+			                    </span>
+			                </div>
+			            </div>
+			        </div>
+				</div>
+			</div>
+
+
     	<div class="container">
 		    <div class="jumbotron text-center">
 				<h1 id='header'> Unsplash </h1>
