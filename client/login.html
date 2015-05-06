@@ -144,30 +144,34 @@ function addNew()
 		   var list = JSON.parse(data);
 		   allPhotos = list;
 		   var output = "";
-		   for(var i=0; i < list.length; i++){
-		   	if(!photosToShow || (photosToShow == 'user' && list[i].user == userID)) {
-			   output = output + "<div id=title><h2>" + list[i].name + "</h2></div>";
-				 output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
-			  	"'>" + "</a>"+"</div>" + "<br>";
-			   output = output + "<a href='javascript:renamePhoto(" + i + ")' id='rename' class='btn btn-default'>" + "Rename</a>";
-			   output = output + "<a href='javascript:deletePhoto(" + i + ")' id='delete' class='btn btn-default'>" + "Delete</a>";
-			   //output = output + "<a href='javascript:editTags(" + i + ")' id='tags' class='btn btn-default'>" + "Tags</a>";
-			   if(list[i].tags.length > 0){
-			   	output = output + "<p>";
-
-			   	for(var j=0; j<list[i].tags.length; j++){
-			   		output = output + "[" + list[i].tags[j] + "]" + "&nbsp";
-			   	}
-
-			   	output = output + "</p>";
-			 	 }
-			 	 output = output + "<hr>";
-			 	}
+		   if(photosToShow == 'no photos to show') {
+		   	output += "<div id=title><h2>No photos to show for that search</h2></div>";
 		   }
-		   document.getElementById("list").innerHTML = output;
+		   else {
+			   for(var i=0; i < list.length; i++){
+			   	if(!photosToShow || (photosToShow == 'user' && list[i].user == userID) || list[i].name == photosToShow || list[i].tags.indexOf(photosToShow.toLowerCase()) >= 0) {
+				   output = output + "<div id=title><h2>" + list[i].name + "</h2></div>";
+					 output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
+				  	"'>" + "</a>"+"</div>" + "<br>";
+				   output = output + "<a href='javascript:renamePhoto(" + i + ")' id='rename' class='btn btn-default'>" + "Rename</a>";
+				   output = output + "<a href='javascript:deletePhoto(" + i + ")' id='delete' class='btn btn-default'>" + "Delete</a>";
+				   //output = output + "<a href='javascript:editTags(" + i + ")' id='tags' class='btn btn-default'>" + "Tags</a>";
+				   if(list[i].tags.length > 0){
+				   	output = output + "<p>";
+
+				   	for(var j=0; j<list[i].tags.length; j++){
+				   		output = output + "[" + list[i].tags[j] + "]" + "&nbsp";
+				   	}
+
+				   	output = output + "</p>";
+				 	 }
+				 	 output = output + "<hr>";
+				 	}
+			   }
+			 }
+			   document.getElementById("list").innerHTML = output;
 	   }
 	   loadURL(url, callback);
-
    }
 
    function deletePhoto(i){
@@ -296,29 +300,30 @@ function addNew()
 	}
 
 	function searchTags() {
-		var tagToSearch = document.getElementById("searchText").value;
-		var match;
-		for (var i=0; i < allPhotos.length; i++) {
-	console.log(i);
-	console.log(tagToSearch);
-	console.log('NAME: ' + allPhotos[i].name.indexOf(tagToSearch));
-			if (allPhotos[i].tags.indexOf(tagToSearch.toLowerCase()) >= 0) {
-		console.log('Working!');
-				alert(allPhotos[i].tags);
-				match = allPhotos[i]; //Store all objects that match into this variable
+	   var tagToSearch = document.getElementById("searchText").value;
+	   var match;
+   	for (var i=0; i < allPhotos.length; i++) {
+			console.log(i);
+			console.log(tagToSearch);
+			console.log('NAME: ' + allPhotos[i].name.indexOf(tagToSearch));
+   		if (allPhotos[i].tags.indexOf(tagToSearch.toLowerCase()) >= 0) {
+			console.log('Working!');
+   			alert(allPhotos[i].tags);
+   			match = allPhotos[i]; //Store all objects that match into this variable
+   		}
+   		else if (allPhotos[i].name.indexOf(tagToSearch) >= 0) {
+			console.log(allPhotos[i].name.indexOf(tagToSearch));
+   			alert(allPhotos[i].name);
+   			match = allPhotos[i]; //Store all objects that match into this variable
+   		}
+			if(match) {
+				updateList(tagToSearch);
+				return; //Returns all the tags that matched
 			}
-			else if (allPhotos[i].name.indexOf(tagToSearch) >= 0) {
-		console.log(allPhotos[i].name.indexOf(tagToSearch));
-				alert(allPhotos[i].name);
-				match = allPhotos[i]; //Store all objects that match into this variable
-			}
-	if(match) {
-		updateList(tagToSearch);
-		return; //Returns all the tags that matched
-	}
-		}
-		return null;
-	}
+   	}
+   	updateList('no photos to show');
+   	return null;
+  }
 
 	</script>
 
