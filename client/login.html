@@ -101,7 +101,7 @@ function addNew()
       if(document.getElementById('animalsCheckbox').checked) checkboxTags.push('animals');
       if(document.getElementById('selfieCheckbox').checked) checkboxTags.push('selfie');
       if(document.getElementById('otherCheckbox').checked) checkboxTags.push('other');
-      console.log(checkboxTags);
+      //console.log(checkboxTags);
 
       var fd = new FormData();
       var fileInput = userID + new Date().getTime().toString() + "." + t;
@@ -149,7 +149,7 @@ function addNew()
 		   }
 		   else {
 			   for(var i=0; i < list.length; i++){
-			   	if(!photosToShow || (photosToShow == 'user' && list[i].user == userID) || list[i].name == photosToShow || list[i].tags.indexOf(photosToShow.toLowerCase()) >= 0) {
+			   	if(!photosToShow || (photosToShow == 'user' && list[i].user == userID) || list[i].name.toLowerCase() == photosToShow || list[i].tags.indexOf(photosToShow.toLowerCase()) >= 0) {
 				   output = output + "<div id=title><h2>" + list[i].name + "</h2></div>";
 					 output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
 				  	"'>" + "</a>"+"</div>" + "<br>";
@@ -169,7 +169,7 @@ function addNew()
 				 	}
 			   }
 			 }
-			   document.getElementById("list").innerHTML = output;
+			 document.getElementById("list").innerHTML = output;
 	   }
 	   loadURL(url, callback);
    }
@@ -300,20 +300,21 @@ function addNew()
 	}
 
 	function searchTags() {
-	   var tagToSearch = document.getElementById("searchText").value;
+	   var tagToSearch = document.getElementById("searchText").value.toLowerCase();
 	   var match;
    	for (var i=0; i < allPhotos.length; i++) {
-			console.log(i);
-			console.log(tagToSearch);
-			console.log('NAME: ' + allPhotos[i].name.indexOf(tagToSearch));
-   		if (allPhotos[i].tags.indexOf(tagToSearch.toLowerCase()) >= 0) {
-			console.log('Working!');
-   			alert(allPhotos[i].tags);
+			//console.log(i);
+			//console.log(tagToSearch);
+			//console.log('NAME: ' + allPhotos[i].name.indexOf(tagToSearch));
+			var name = allPhotos[i].name.toLowerCase();
+   		if (allPhotos[i].tags.indexOf(tagToSearch) >= 0) {
+			//console.log('Working!');
+   			//alert(allPhotos[i].tags);
    			match = allPhotos[i]; //Store all objects that match into this variable
    		}
-   		else if (allPhotos[i].name.indexOf(tagToSearch) >= 0) {
-			console.log(allPhotos[i].name.indexOf(tagToSearch));
-   			alert(allPhotos[i].name);
+   		else if (name.indexOf(tagToSearch) >= 0) {
+			//console.log(allPhotos[i].name.indexOf(tagToSearch));
+   			//alert(allPhotos[i].name);
    			match = allPhotos[i]; //Store all objects that match into this variable
    		}
 			if(match) {

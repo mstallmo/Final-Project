@@ -68,24 +68,20 @@
 		   }
 		   else {
 			   for(var i=0; i < list.length; i++){
-			   	if(!photosToShow || (photosToShow == 'user' && list[i].user == userID) || list[i].name == photosToShow || list[i].tags.indexOf(photosToShow.toLowerCase()) >= 0) {
+			   	if(!photosToShow || (photosToShow == 'user' && list[i].user == userID) || list[i].name.toLowerCase() == photosToShow || list[i].tags.indexOf(photosToShow.toLowerCase()) >= 0) {
 				   output = output + "<div id=title><h2>" + list[i].name + "</h2></div>";
-					 output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
-				  	"'>" + "</a>"+"</div>" + "<br>";
-				   output = output + "<a href='javascript:renamePhoto(" + i + ")' id='rename' class='btn btn-default'>" + "Rename</a>";
-				   output = output + "<a href='javascript:deletePhoto(" + i + ")' id='delete' class='btn btn-default'>" + "Delete</a>";
-				   //output = output + "<a href='javascript:editTags(" + i + ")' id='tags' class='btn btn-default'>" + "Tags</a>";
-				   if(list[i].tags.length > 0){
-				   	output = output + "<p>";
-
-				   	for(var j=0; j<list[i].tags.length; j++){
-				   		output = output + "[" + list[i].tags[j] + "]" + "&nbsp";
-				   	}
-
-				   	output = output + "</p>";
-				 	 }
-				 	 output = output + "<hr>";
-				 	}
+						output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
+						"'>" + "</a>"+"</div>" + "<br>";
+						//output = output + "<a href='javascript:editTags(" + i + ")' id='tags' class='btn btn-default'>" + "Tags</a>";
+						if(list[i].tags.length > 0){
+							output = output + "<p>";
+							for(var j=0; j<list[i].tags.length; j++){
+								output = output + "[" + list[i].tags[j] + "]" + "&nbsp";
+							}
+							output = output + "</p>";
+						}
+						output = output + "<hr>";
+						}
 			   }
 		 	}
 		   document.getElementById("photolist").innerHTML = output;
@@ -94,20 +90,21 @@
 	}
 
 	function searchTags() {
-	  var tagToSearch = document.getElementById("searchText").value;
+	  var tagToSearch = document.getElementById("searchText").value.toLowerCase();;
 	  var match;
    	for (var i=0; i < allPhotos.length; i++) {
-			console.log(i);
-			console.log(tagToSearch);
-			console.log('NAME: ' + allPhotos[i].name.indexOf(tagToSearch));
-   		if (allPhotos[i].tags.indexOf(tagToSearch.toLowerCase()) >= 0) {
-			console.log('Working!');
-   			alert(allPhotos[i].tags);
+			//console.log(i);
+			//console.log(tagToSearch);
+			//console.log('NAME: ' + allPhotos[i].name.indexOf(tagToSearch));
+			var name = allPhotos[i].name.toLowerCase();
+   		if (allPhotos[i].tags.indexOf(tagToSearch) >= 0) {
+			//console.log('Working!');
+   			//alert(allPhotos[i].tags);
    			match = allPhotos[i]; //Store all objects that match into this variable
    		}
-   		else if (allPhotos[i].name.indexOf(tagToSearch) >= 0) {
-			console.log(allPhotos[i].name.indexOf(tagToSearch));
-   			alert(allPhotos[i].name);
+   		else if (name.indexOf(tagToSearch) >= 0) {
+			//console.log(allPhotos[i].name.indexOf(tagToSearch));
+   			//alert(allPhotos[i].name);
    			match = allPhotos[i]; //Store all objects that match into this variable
    		}
 			if(match) {
@@ -145,7 +142,7 @@
 		                <div class="input-group">
 		                    <input type="text" id="searchText" class="form-control" placeholder="Search" name="q">
 		                    <div class="input-group-btn">
-		                        <button onclick="searchTags()" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i>BUTTON</button>
+		                        <button onclick="searchTags()" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
 		                    </div>
 		                </div>
 		            </form>
