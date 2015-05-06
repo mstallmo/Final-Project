@@ -117,7 +117,7 @@ function addNew()
 		  name: document.getElementById('photoName').value,
 		  tags: checkboxTags,
 		  user: userID,
-		  url: "https://s3.amazonaws.com/ameweb/" + fileInput
+		  url: "https://s3.amazonaws.com/ame498photo/" + fileInput
 	  }
 
       fd.append('fordb', encodeURIComponent(JSON.stringify(fordb)));
@@ -259,8 +259,6 @@ function addNew()
 				document.getElementById("usernameReg").value="";
 				document.getElementById("passwordReg").value="";
 				document.getElementById("passwordReg1").value="";
-				$('#signupbox').hide(); 
-				$('#loginbox').show();
 			}
 			else{
 				alert("account already exists");
@@ -328,37 +326,47 @@ function addNew()
 
 
 		<!-- Navbar -->
-		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-		    <div class="navbar-header">
-		        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-		            <span class="sr-only">Toggle navigation</span>
-		            <span class="icon-bar"></span>
-		            <span class="icon-bar"></span>
-		            <span class="icon-bar"></span>
-		        </button>
-		        <a class="navbar-brand" href="index.html">Unsplash</a>
-		    </div>
-		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		        <ul class="nav navbar-nav">
-		            <li class="active"><a href="#">Home</a></li>
-		            <li><a href="#">Notifications</a></li>
-		            <li><a href="#">Profile</a></li>
-		        </ul>
-		        <div class="col-sm-3 col-md-3 pull-right">
-		            <form class="navbar-form" role="search">
-		                <div class="input-group">
-		                    <input type="text" id="searchText" class="form-control" placeholder="Search" name="q">
-		                    <div class="input-group-btn">
-		                        <button onclick="searchTags()" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
-		                    </div>
-		                </div>
-		            </form>
-		        </div>        
-		    </div>
-		</nav>
+		<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	    	<div class"container">
+	    		<div class="navbar-header">
+	    			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	    				<span class="sr-only">Toggle Navigation</span>
+	    				<span class="icon-bar"></span>
+	    				<span class="icon-bar"></span>
+	    				<span class="icon-bar"></span>
+	    			</button>
+	    			<a class="navbar-brand" href="index.html">Unsplash</a>
+	    		</div>
+	    		<div class="navbar-collapse collapse">
+	    			<ul class="nav navbar-nav navbar-right">
+	    				<li class="active"><a href="index.html">Home</a></li>
+	    				<li><a href="#">Notifications</a></li>
+	    				<li><a href="#">Profile</a></li>
+	    			</ul>
+	    		</div>
+	    	</div>
+    	</div>
 
+    	<!--Uploader: should only see the option to upload if logged in -->
 
-		<!--Uploader: should only see the option to upload if logged in -->
+			<div class="container">
+				<div class="row">
+			        <div class="col-md-6">
+			    		<h2>Custom search field</h2>
+			            <div id="custom-search-input">
+			                <div class="input-group col-md-12">
+			                    <input type="text" id="searchText" class="form-control input-lg" placeholder="Buscar" />
+			                    <span class="input-group-btn">
+			                        <button onclick="searchTags()" class="btn btn-info btn-lg" type="button">
+			                            <i class="glyphicon glyphicon-search"></i>
+			                        </button>
+			                    </span>
+			                </div>
+			            </div>
+			        </div>
+				</div>
+			</div>
+
 
     	<div class="container">
 		    <div class="jumbotron text-center">
@@ -386,133 +394,35 @@ function addNew()
 
 	</div>
 
-
-
 	<div id='prelogin'>
+		<div class='box'>
+			<h1> Sign in </h1>
 
-		<div class="container">    
-    <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
-        <div class="panel panel-info" >
-            <div class="panel-heading">
-                <div class="panel-title">Sign In</div>
-            </div>     
+			<label for='username'> Username </label>
+	    	<input type='email' id='username' >
 
-            <div style="padding-top:30px" class="panel-body" >
+			<label for='password'> Password </label>
+	    	<input type='password' id='password' >
 
-                <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-                    
-                <form id="loginform" class="form-horizontal" role="form">
-                            
-                    <div style="margin-bottom: 25px" class="input-group">
-                    	<label for='username'> Username </label>
-	                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-	                    <input id="username" type="email" class="form-control" name="username" value="" placeholder="email">
-                                   
-                    </div>
-                        
-                    <div style="margin-bottom: 25px" class="input-group">
-                    	<label for='password'> Password </label>
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input id="password" type="password" class="form-control" name="password" placeholder="password">
-                    </div>
-                            
+			<a href='javascript:login()'> Log in </a>
+		</div>
 
-                            
-                    <div class="input-group">
-                        <div class="checkbox">
-                            <label>
-                                <input id="login-remember" type="checkbox" name="remember" value="1"> Remember me
-                            </label>
-                        </div>
-                    </div>
+		<div class='box'>
+			<h1> Register </h1>
+			<label for='nameReg'> Full name  </label>
+	    	<input type='text' id='nameReg' >
 
+			<label for='usernameReg'> Email (used as username) </label>
+	    	<input type='email' id='usernameReg' >
 
-                    <div style="margin-top:10px" class="form-group">
-                        <!-- Button -->
+			<label for='passwordReg'> Password </label>
+	    	<input type='password' id='passwordReg' >
 
-                        <div class="col-sm-12 controls">
-                          <a id="btn-login" href="javascript:login()" class="btn btn-success">Login  </a>
+			<label for='passwordReg1'> Retype Password </label>
+	    	<input type='password' id='passwordReg1' >
 
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                        <div class="col-md-12 control">
-                            <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
-                                Don't have an account! 
-                            <a href="#" onClick="$('#loginbox').hide(); $('#signupbox').show()">
-                                Sign Up Here
-                            </a>
-                            </div>
-                        </div>
-                    </div>    
-                </form>     
-
-            </div>                     
-        </div>  
-    </div>
-    <div id="signupbox" style="display:none; margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <div class="panel-title">Sign Up</div>
-                <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="#" onclick="$('#signupbox').hide(); $('#loginbox').show()">Sign In</a></div>
-            </div>  
-
-            <div class="panel-body" >
-                <form id="signupform" class="form-horizontal" role="form">
-                            
-                <div id="signupalert" style="display:none" class="alert alert-danger">
-                    <p>Error:</p>
-                    <span></span>
-                </div>
-                                
-                            
-                              
-                <div class="form-group">
-                    <label for="usernameReg" class="col-md-3 control-label">Email</label>
-                    <div class="col-md-9">
-                        <input id="usernameReg" type="text" class="form-control" name="email" placeholder="Email Address">
-                    </div>
-                </div>
-                                
-                <div class="form-group">
-                    <label for="nameReg" class="col-md-3 control-label">Name</label>
-                    <div class="col-md-9">
-                        <input id="nameReg" type="text" class="form-control" name="name" placeholder="Full Name">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="passwordReg" class="col-md-3 control-label">Password</label>
-                    <div class="col-md-9">
-                        <input id="passwordReg" type="password" class="form-control" name="password" placeholder="Password">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="passwordReg1" class="col-md-3 control-label">Retype Password</label>
-                    <div class="col-md-9">
-                        <input id="passwordReg1" type="password" class="form-control" name="passwd" placeholder="Retype Password">
-                    </div>
-                </div>
-                                
-
-	            <div class="form-group">
-	                <!-- Button -->                                        
-	                <div class="col-md-offset-3 col-md-9">
-	                    <button onclick="register()" id="btn-signup" type="button" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Sign Up</button>
-	                </div>
-	            </div>      
-                            
-                            
-	            </form>
-	         </div>
-	    </div>
-   
-     </div> 
-</div>
-
-
+			<a href='javascript:register()'> Register </a>
+		</div>
 	</div>
 </body>
 
