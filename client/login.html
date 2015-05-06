@@ -149,6 +149,7 @@ function addNew()
 		   }
 		   else {
 			   for(var i=0; i < list.length; i++){
+			   	console.log('NAME ' + i + ": " + list[i].name);
 			   	if(!photosToShow || (photosToShow == 'user' && list[i].user == userID) || list[i].name.toLowerCase() == photosToShow || list[i].tags.indexOf(photosToShow.toLowerCase()) >= 0) {
 				   output = output + "<div id=title><h2>" + list[i].name + "</h2></div>";
 					 output = output +"<div class='image'>"+"<a class = 'thumbnail' href=" + list[i].url + " data-lightbox ='user' target = '_blank'>" + "<img id='test' class='img-rounded' src='" + list[i].url +
@@ -177,7 +178,7 @@ function addNew()
    function deletePhoto(i){
 	   var id = allPhotos[i].id;
 	   var url = "./deletephoto?id=" + encodeURIComponent(id)
-		  			 +"&collection=" + userID;
+		  			 +"&collection=ame494unsplash";
 	   var callback = function(data){
 		   if(data === "deleted"){
 			   updateList();
@@ -190,14 +191,16 @@ function addNew()
    function renamePhoto(i){
 	   var id = allPhotos[i].id;
 	   var newname = prompt("Rename photo", getPhotoName(id))
+	   console.log('NEWNAME: ' + newname);
 
 	   var url = "./renamephoto?id=" + encodeURIComponent(id)
 	   					+ "&name=" + encodeURIComponent(newname)
-							+ "&collection=" + userID;
+							+ "&collection=ame494unsplash";
 
 
 	   var callback = function(data){
 		   if(data === "done"){
+		   	console.log('UPDATE LIST');
 			   updateList();
 		   }
 	   }

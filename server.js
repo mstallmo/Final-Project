@@ -12,7 +12,7 @@ app.get("/", function (req, res) {
 
 var auth = require('./authenticate.js');
 
-var db = require('mongoskin').db('mongodb://group1:xe2hep@ec2-52-8-20-156.us-west-1.compute.amazonaws.com:27017/group1');
+var db = require('mongoskin').db('mongodb://user:password@localhost:27017/photos');
 console.log(db);
 
 app.get("/addtodo", function (req, res) {
@@ -141,7 +141,7 @@ app.post('/uploadFile', function(req, res){
 
      fs.readFile(tmpPath, function (err, data) {
          var params = {
-             Bucket:'ame498photo',
+             Bucket:'ameweb',
              ACL:'public-read',
              Key:intname,
              Body: data
